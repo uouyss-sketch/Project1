@@ -1,0 +1,32 @@
+name: Daily Finance Scraping
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 매일 한국 시간 오전 9시 (UTC 0시 기준)에 실행
+  workflow_dispatch: # 내가 원할 때 수동으로 버튼 눌러서 실행 가능하게 하는 옵션
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # 깃허브가 빌려주는 빈 리눅스 컴퓨터
+    steps:
+      - name: 내 저장소 코드 불러오기
+        uses: actions/checkout@v3
+
+      - name: 파이썬 설치하기
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: 필요한 도구(라이브러리) 설치하기
+        run: pip install requests beautifulsoup4 pandas openpyxl
+
+      - name: 파이썬 스크립트 실행 (★파일명 확인★)
+        run: python Untitled22.py 
+
+      - name: 완성된 엑셀 파일 깃허브에 다시 저장하기
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add *.xlsx
+          git commit -m "엑셀 데이터 자동 업데이트" || echo "No changes to commit"
+          git push

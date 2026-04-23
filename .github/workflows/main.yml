@@ -1,0 +1,32 @@
+name: Daily Finance Scraping
+
+on:
+  schedule:
+    - cron: '0 0 * * *' 
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 내 저장소 코드 불러오기
+        uses: actions/checkout@v4  # <-- v3에서 v4로 업데이트 완료 (경고 해결!)
+
+      - name: 파이썬 설치하기
+        uses: actions/setup-python@v5 # <-- v4에서 v5로 업데이트 완료 (경고 해결!)
+        with:
+          python-version: '3.9'
+
+      - name: 필요한 도구(라이브러리) 설치하기
+        run: pip install requests beautifulsoup4 pandas openpyxl
+
+      - name: 파이썬 스크립트 실행
+        run: python test1.py  # <-- 실제 올려두신 파일명으로 일치 완료!
+
+      - name: 완성된 엑셀 파일 깃허브에 다시 저장하기
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add *.xlsx
+          git commit -m "엑셀 데이터 자동 업데이트" || echo "No changes to commit"
+          git push

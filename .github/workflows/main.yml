@@ -21,7 +21,7 @@ jobs:
         run: pip install requests beautifulsoup4 pandas openpyxl
 
       - name: 파이썬 스크립트 실행
-        run: python Untitled22.py  # <-- 실제 올려두신 파일명으로 일치 완료!
+        run: python test1.py  # <-- 실제 올려두신 파일명으로 일치 완료!
 
       - name: 완성된 엑셀 파일 깃허브에 다시 저장하기
         run: |

@@ -21,7 +21,7 @@ jobs:
         run: pip install yfinance pandas openpyxl
 
       - name: 데이터 수집 실행
-        run: python main.py # 회원님이 올리신 파일 이름과 일치해야 합니다.
+        run: python g7_collector.py # 회원님이 올리신 파일 이름과 일치해야 합니다.
 
       - name: 결과 저장 및 업데이트
         run: |

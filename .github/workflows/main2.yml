@@ -1,19 +1,19 @@
 name: G7_Finance_Auto_Run
 
 on:
-  workflow_dispatch: # 이 한 줄이 웹에서 '버튼'을 만들어줍니다!
+  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *' # 한국시간 오전 9시 자동 실행
+    - cron: '0 0 * * *'
 
 jobs:
   run_data_bot:
     runs-on: ubuntu-latest
     steps:
-      - name: 코드 체크아웃
-        uses: actions/checkout@v3
+      - name: 코드 체크아웃 (최신 v4)
+        uses: actions/checkout@v4
 
-      - name: 파이썬 세팅
-        uses: actions/setup-python@v4
+      - name: 파이썬 세팅 (최신 v5)
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -21,7 +21,7 @@ jobs:
         run: pip install yfinance pandas openpyxl
 
       - name: 데이터 수집 실행
-        run: python g7_collector.py # 회원님이 올리신 파일 이름과 일치해야 합니다.
+        run: python main.py
 
       - name: 결과 저장 및 업데이트
         run: |

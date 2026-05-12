@@ -2,9 +2,8 @@ name: G7 Market Data Daily Update
 
 on:
   schedule:
-    # UTC 기준 00:00은 한국 시간(KST)으로 오전 09:00입니다.
-    - cron: '0 0 * * *'
-  workflow_dispatch: # 수동으로 즉시 실행하고 싶을 때 사용
+    - cron: '0 0 * * *' # 한국 시간 아침 9시
+  workflow_dispatch: # 수동 실행 버튼 활성화
 
 jobs:
   build:
@@ -12,12 +11,12 @@ jobs:
 
     steps:
     - name: Checkout repository content
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4 # v3에서 v4로 업데이트
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5 # v4에서 v5로 업데이트
       with:
-        python-version: '3.9'
+        python-version: '3.10'
 
     - name: Install dependencies
       run: |
@@ -31,7 +30,9 @@ jobs:
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git add g7_market_data.xlsx
+        # 엑셀 파일이 있으면 스테이징, 없으면 무시
+        git add g7_market_data.xlsx || echo "No file to add"
+        # 변경사항이 있을 때만 커밋
         git commit -m "Update daily G7 market data $(date +'%Y-%m-%d')" || echo "No changes to commit"
         git push
       env:

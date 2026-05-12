@@ -3,20 +3,27 @@ name: G7 Market Data Daily Update
 on:
   schedule:
     - cron: '0 0 * * *' # 한국 시간 아침 9시
-  workflow_dispatch: # 수동 실행 버튼 활성화
+  workflow_dispatch: # 수동 실행 버튼
+
+# Node.js 24 환경을 강제로 활성화하여 2026년 시스템 변화에 대응
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # GITHUB_TOKEN에 대한 쓰기 권한을 코드상에서 한 번 더 명시 (매우 중요)
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout repository content
-      uses: actions/checkout@v4 # v3에서 v4로 업데이트
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v5 # v4에서 v5로 업데이트
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11' # 최신 파이썬 버전 사용
 
     - name: Install dependencies
       run: |
@@ -30,10 +37,16 @@ jobs:
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        # 엑셀 파일이 있으면 스테이징, 없으면 무시
-        git add g7_market_data.xlsx || echo "No file to add"
-        # 변경사항이 있을 때만 커밋
-        git commit -m "Update daily G7 market data $(date +'%Y-%m-%d')" || echo "No changes to commit"
-        git push
+        
+        # 파일이 생성되었는지 확인 후 추가
+        if [ -f g7_market_data.xlsx ]; then
+          git add g7_market_data.xlsx
+          # 변경사항이 있을 때만 커밋, 없으면 무시
+          git commit -m "Update daily G7 market data $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
+        else
+          echo "Error: g7_market_data.xlsx file not found."
+          exit 1
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -31,7 +31,7 @@ jobs:
         pip install yfinance pandas openpyxl
 
     - name: Run Python script
-      run: python main.py
+      run: python hivefive.py
 
     - name: Commit and push changes
       run: |
